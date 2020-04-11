@@ -73,9 +73,9 @@ const core = __webpack_require__(470);
 // most @actions toolkit packages have async methods
 async function run() {
   try {
-    core.debug("Starting run");
+    core.warning("Starting run");
     const path = core.getInput("versionFile");
-    core.debug(path);
+    core.warning(path);
     // const { context } = github;
     // const { payload, issue } = context;
     // core.debug(
