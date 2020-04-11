@@ -3,6 +3,12 @@ const github = require("@actions/github");
 
 const getVersion = (file) => file.match(/\d\.\d\.\d/);
 
+const getBranch = (ref) => {
+  const splitText = ref.split("refs/head/").filter(Boolean);
+  if (splitText.length > 0) return splitText[0];
+  return "";
+};
+
 const getFile = async (octokit, issue, path, ref) => {
   const { owner, repo } = issue;
   const result = await octokit.repos.getContents({
@@ -18,28 +24,24 @@ const getFile = async (octokit, issue, path, ref) => {
 // most @actions toolkit packages have async methods
 async function run() {
   try {
-    core.warning("Starting run");
+    core.info("Starting run");
     const path = core.getInput("versionFile");
     const { context } = github;
     const { payload, issue } = context;
-    core.warning(
-      JSON.stringify(payload, undefined, 2),
-      JSON.stringify(context, undefined, 2)
-    );
     if (!payload.pull_request) {
       return;
     }
-    const { ref } = payload.pull_request.head;
+    const ref = getBranch(payload.ref);
     const myToken = core.getInput("githubToken");
     const octokit = new github.GitHub(myToken);
 
     const branchFile = await getFile(octokit, issue, path, ref);
     const branchVersion = getVersion(branchFile);
-    core.warning(`PR Branch version is ${branchVersion}`);
+    core.info(`Version for ${ref} is ${branchVersion}`);
 
     const masterFile = await getFile(octokit, issue, path);
     const masterVersion = getVersion(masterFile);
-    core.warning(`Master Branch version is ${masterVersion}`);
+    core.info(`Master Branch version is ${masterVersion}`);
 
     const hasChanges = true;
 
@@ -47,7 +49,7 @@ async function run() {
       throw Error(`Please update the version number when changes are made.`);
     }
 
-    core.debug("Version number updated");
+    core.info("Version number updated");
   } catch (error) {
     core.setFailed(error.message);
   }
