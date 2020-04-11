@@ -526,6 +526,7 @@ async function run() {
     const path = core.getInput("version_file");
     const { context } = github;
     const { payload, issue } = context;
+    core.debug(payload, context);
     const { ref } = payload.pull_request.head;
     const myToken = core.getInput("myToken");
     const octokit = new github.GitHub(myToken);
