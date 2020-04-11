@@ -18,6 +18,7 @@ const getFile = async (octokit, issue, path, ref) => {
 // most @actions toolkit packages have async methods
 async function run() {
   try {
+    core.debug("Starting run");
     const path = core.getInput("version_file");
     const { context } = github;
     const { payload, issue } = context;
