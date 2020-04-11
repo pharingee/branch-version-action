@@ -3,35 +3,33 @@ const github = require("@actions/github");
 
 const getVersion = (file) => file.match(/\d\.\d\.\d/);
 
+const getFile = async (octokit, issue, path, ref) => {
+  const { owner, repo } = issue;
+  const result = await octokit.repos.getContents({
+    owner,
+    repo,
+    path,
+    ref,
+  });
+
+  return Buffer.from(result.data.content, "base64").toString();
+};
+
 // most @actions toolkit packages have async methods
 async function run() {
   try {
     const path = core.getInput("version_file");
-
-    const { payload, issue } = github.context;
-    const { owner, repo } = issue;
+    const { context } = github;
+    const { payload, issue } = context;
     const { ref } = payload.pull_request.head;
     const myToken = core.getInput("myToken");
     const octokit = new github.GitHub(myToken);
 
-    const branchResult = await octokit.repos.getContents({
-      owner,
-      repo,
-      path,
-      ref,
-    });
-    const branchFile = Buffer.from(
-      branchResult.data.content,
-      "base64"
-    ).toString();
+    const branchFile = await getFile(octokit, issue, path, ref);
     const branchVersion = getVersion(branchFile);
     core.debug(`PR Branch version is ${branchVersion}`);
 
-    const masterResult = await octokit.repos.getContents({ owner, repo, path });
-    const masterFile = Buffer.from(
-      masterResult.data.content,
-      "base64"
-    ).toString();
+    const masterFile = await getFile(octokit, issue, path);
     const masterVersion = getVersion(masterFile);
     core.debug(`Master Branch version is ${masterVersion}`);
 
