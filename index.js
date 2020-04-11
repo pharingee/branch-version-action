@@ -11,12 +11,8 @@ const getBranch = (ref) => {
 
 const getFile = async (octokit, issue, path, ref) => {
   const { owner, repo } = issue;
-  const result = await octokit.repos.getContents({
-    owner,
-    repo,
-    path,
-    ref,
-  });
+  const options = ref ? { owner, repo, path, ref } : { owner, repo, path };
+  const result = await octokit.repos.getContents(options);
 
   return Buffer.from(result.data.content, "base64").toString();
 };
