@@ -28,10 +28,8 @@ async function run() {
     const path = core.getInput("versionFile");
     const { context } = github;
     const { payload, issue } = context;
-    if (!payload.pull_request) {
-      return;
-    }
     const ref = getBranch(payload.ref);
+
     const myToken = core.getInput("githubToken");
     const octokit = new github.GitHub(myToken);
 
