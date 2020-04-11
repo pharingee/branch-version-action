@@ -19,7 +19,7 @@ const getFile = async (octokit, issue, path, ref) => {
 async function run() {
   try {
     core.debug("Starting run");
-    const path = core.getInput("version_file");
+    const path = core.getInput("versionFile");
     const { context } = github;
     const { payload, issue } = context;
     core.debug(
@@ -27,7 +27,7 @@ async function run() {
       JSON.stringify(context, undefined, 2)
     );
     const { ref } = payload.pull_request.head;
-    const myToken = core.getInput("myToken");
+    const myToken = core.getInput("githubToken");
     const octokit = new github.GitHub(myToken);
 
     const branchFile = await getFile(octokit, issue, path, ref);
