@@ -26,6 +26,9 @@ async function run() {
       JSON.stringify(payload, undefined, 2),
       JSON.stringify(context, undefined, 2)
     );
+    if (!payload.pull_request) {
+      return;
+    }
     const { ref } = payload.pull_request.head;
     const myToken = core.getInput("githubToken");
     const octokit = new github.GitHub(myToken);
