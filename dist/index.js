@@ -534,9 +534,7 @@ async function run() {
     const masterFile = await getFile(octokit, issue, path);
     const masterVersion = getVersion(masterFile).toString();
     core.info(`Master Branch version is ${masterVersion}`);
-    core.info(masterVersion);
-    core.info(branchVersion);
-    core.info(branchVersion == masterVersion);
+
     if (masterVersion == branchVersion) {
       core.setFailed(`Please update the version number when changes are made.`);
     }
