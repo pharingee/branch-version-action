@@ -528,11 +528,11 @@ async function run() {
     const octokit = new github.GitHub(myToken);
 
     const branchFile = await getFile(octokit, issue, path, payload.ref);
-    const branchVersion = getVersion(branchFile);
+    const branchVersion = getVersion(branchFile).toString();
     core.info(`Version for ${payload.ref} is ${branchVersion}`);
 
     const masterFile = await getFile(octokit, issue, path);
-    const masterVersion = getVersion(masterFile);
+    const masterVersion = getVersion(masterFile).toString();
     core.info(`Master Branch version is ${masterVersion}`);
     core.info(masterVersion);
     core.info(branchVersion);
